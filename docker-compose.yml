@@ -1,0 +1,51 @@
+version: '3'
+services:
+  db-auth:
+    image: postgres:latest
+    env_file:
+      - AuthService/.env
+    volumes:
+      - ./AuthService/.postgres:/var/lib/postgresql/data
+    expose:
+      - '5432'
+    networks:
+      - network
+
+  auth-service:
+    build:
+      context: ./AuthService
+    depends_on:
+      - db-auth
+    command: python3 src/main.py
+    ports:
+      - '8001:8000'
+    restart: always
+    networks:
+      - network
+
+  db-order:
+    image: postgres:latest
+    env_file:
+      - OrderService/.env
+    volumes:
+      - ./OrderService/.postgres:/var/lib/postgresql/data
+    expose:
+      - '5432'
+    networks:
+      - network
+
+  order-service:
+    build:
+      context: ./OrderService
+    depends_on:
+      - db-order
+    command: python3 src/main.py
+    ports:
+      - '8002:8000'
+    restart: always
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
