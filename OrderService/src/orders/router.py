@@ -92,7 +92,7 @@ def create_order(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    user = get_user_by_id(current_user.user_id)
+    user = current_user
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
