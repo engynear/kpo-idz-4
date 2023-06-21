@@ -20,7 +20,6 @@ class User(Base):
     )
 
     session = relationship("Session", back_populates="user")
-    orders = relationship("Order", back_populates="user")  # Обратная связь с заказами
 
 class Session(Base):
     __tablename__ = "session"
@@ -45,13 +44,12 @@ class Order(Base):
     __tablename__ = 'order'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user_id = Column(Integer, nullable=False)
     status = Column(String(30), nullable=False)
     special_requests = Column(Text)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())
 
-    user = relationship("User", back_populates="orders")
     order_dishes = relationship("OrderDish", back_populates="order")
 
     __table_args__ = (
